@@ -18,7 +18,7 @@ type binop =
 type value =
     BoolV of bool
   | IntV of int
-  | UndefV (* TODO: really keep? *)
+  | FloatV of float
     
 (* expresssions *)
 type expr = 
@@ -39,7 +39,7 @@ type cmd =
   | Return of expr                        (* return from current procedure *)
 
 (* Types *)
-type tp = BoolT | IntT | FunT of tp * tp
+type tp = BoolT | IntT | FloatT | FunT of tp * tp
 
 let numeric_tp = function
     IntT -> true
