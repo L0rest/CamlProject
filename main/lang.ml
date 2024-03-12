@@ -68,7 +68,7 @@ type fpdefn =
   | Procdefn of fpdecl * cmd  (* procedure definition: header, command *)
 
 let fpdecl_of_fpdefn = function
-  | Fundefn(fd, _) -> fd
+  | Fundefn (fd, _) -> fd
   | Procdefn (fd, _) -> fd
 let name_of_fpdefn fpd = name_of_fpdecl (fpdecl_of_fpdefn fpd)
 
