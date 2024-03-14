@@ -18,10 +18,9 @@ try searchVal valName env.localvar with NotFound -> let FPdecl (t, _, _) = searc
 
 
 (* Statement typing *)
-let rec tp_stmt ft at = match at with
-| (a :: q) -> let FunT(in_t, out_t) = ft in
-              if a = in_t then tp_stmt out_t q else raise (TypeError "CallE on non-function")
-| _ -> ft
+let rec tp_stmt (FunT(in_t, out_t)) at = match at with
+| (a :: q) -> if a = in_t then tp_stmt out_t q else raise (TypeError "CallE on non-function")
+| _ -> FunT(in_t, out_t)
 
 
 (* Expression typing *)
@@ -53,13 +52,14 @@ let rec tp_expr env exp = match exp with
 (* Program typing *)
 let tp_prog (Prog (fdfs, e)) = let rec getFpdecl = function
                                | (Fundefn(dec,_) :: q) -> (name_of_fpdecl dec, dec) :: getFpdecl q
+                               | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
                                | _ -> [] in
                                tp_expr {localvar = []; funbind = getFpdecl fdfs} e
 
 
 (* Function definition typing *)
-let tp_fdefn env (Fundefn (dec, e)) = let rec getLocalVar = function
-                                      | (Vardec (t, v) :: q) -> (v, t) :: getLocalVar q
+let tp_fdefn env (Fundefn (dec, e)) = let FPdecl(_,_,param) = dec in
+                                      let rec getLocalVar = function
+                                      | (Vardecl(v,t) :: q) -> (v, t) :: getLocalVar q
                                       | _ -> [] in
-                                      let env = {localvar = getLocalVar dec; funbind = env.funbind} in
-                                      tp_expr env e
+                                      tp_expr {localvar = getLocalVar param; funbind = env.funbind} e
