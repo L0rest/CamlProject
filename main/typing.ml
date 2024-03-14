@@ -10,13 +10,6 @@ type environment =
      funbind: (vname * fpdecl) list}
 
 
-(* Program typing *)
-let tp_prog (Prog (fdfs, e)) = let rec getFpdecl = function
-                               | (Fundefn(dec,_) :: q) -> (name_of_fpdecl dec, dec) :: getFpdecl q
-                               | _ -> [] in
-{localvar = []; funbind = getFpdecl fdfs}
-
-
 (* Variable typing *)
 let tp_var env valName = let rec searchVal x = function
                          | ((k,v) :: q) -> if k = x then v else searchVal x q
@@ -55,3 +48,18 @@ let rec tp_expr env exp = match exp with
                     if not(List.mem ft [IntT; FloatT; BoolT]) then tp_stmt ft at
                     else raise (TypeError "CallE on non-function")
 | _ -> raise (TypeError "Not implemented")
+
+
+(* Program typing *)
+let tp_prog (Prog (fdfs, e)) = let rec getFpdecl = function
+                               | (Fundefn(dec,_) :: q) -> (name_of_fpdecl dec, dec) :: getFpdecl q
+                               | _ -> [] in
+                               tp_expr {localvar = []; funbind = getFpdecl fdfs} e
+
+
+(* Function definition typing *)
+let tp_fdefn env (Fundefn (dec, e)) = let rec getLocalVar = function
+                                      | (Vardec (t, v) :: q) -> (v, t) :: getLocalVar q
+                                      | _ -> [] in
+                                      let env = {localvar = getLocalVar dec; funbind = env.funbind} in
+                                      tp_expr env e
