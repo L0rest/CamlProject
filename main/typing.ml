@@ -59,15 +59,19 @@ let tp_fdefn env (Fundefn (dec, e)) = let FPdecl(_,_,param) = dec in
 
 
 (* Program typing *)
-let tp_prog (Prog (fdfs, e)) = let rec getFpdecl env fdfs tdef = match fdfs with
-                               | (Fundefn(dec,exp) :: q) -> let env, exp_type = tp_fdefn env (Fundefn(dec,exp)) in getFpdecl env q (exp_type :: tdef)
+let tp_prog (Prog (fdfs, e)) = let rec getFpdecl env f = match f with
+                               | (Fundefn(dec,exp) :: q) -> let env, exp_type = tp_fdefn env (Fundefn(dec,exp)) in getFpdecl env q
                                | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
-                               | _ -> env,[],[] in
+                               | _ -> env, [] in
+
+                               (* Function used to fill env.funbind *)
                                let rec fillFunBind = function
                                | (Fundefn(dec,_) :: q) -> (name_of_fpdecl dec, dec) :: fillFunBind q
                                | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
                                | _ -> [] in
-                               let env, _, def_type = {localvar = []; funbind = fillFunBind fdfs} fdfs [] in
-                               env, def_type, tp_expr env e
+
+                               let env = {localvar = []; funbind = fillFunBind fdfs} in
+                               let env = env fdfs in
+                               tp_expr env e (* if the function ends without any error, the programm is well typed *)
 
 
