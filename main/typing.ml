@@ -49,17 +49,25 @@ let rec tp_expr env exp = match exp with
 | _ -> raise (TypeError "Not implemented")
 
 
-(* Program typing *)
-let tp_prog (Prog (fdfs, e)) = let rec getFpdecl = function
-                               | (Fundefn(dec,_) :: q) -> (name_of_fpdecl dec, dec) :: getFpdecl q
-                               | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
-                               | _ -> [] in
-                               tp_expr {localvar = []; funbind = getFpdecl fdfs} e
-
-
 (* Function definition typing *)
 let tp_fdefn env (Fundefn (dec, e)) = let FPdecl(_,_,param) = dec in
                                       let rec getLocalVar = function
                                       | (Vardecl(v,t) :: q) -> (v, t) :: getLocalVar q
-                                      | _ -> [] in
-                                      tp_expr {localvar = getLocalVar param; funbind = env.funbind} e
+                                      | _ -> env.localvar in
+                                      let new_env = {localvar = getLocalVar param; funbind = env.funbind} in
+                                      new_env, tp_expr new_env e
+
+
+(* Program typing *)
+let tp_prog (Prog (fdfs, e)) = let rec getFpdecl env fdfs tdef = match fdfs with
+                               | (Fundefn(dec,exp) :: q) -> let env, exp_type = tp_fdefn env (Fundefn(dec,exp)) in getFpdecl env q (exp_type :: tdef)
+                               | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
+                               | _ -> env,[],[] in
+                               let rec fillFunBind = function
+                               | (Fundefn(dec,_) :: q) -> (name_of_fpdecl dec, dec) :: fillFunBind q
+                               | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
+                               | _ -> [] in
+                               let env, _, def_type = {localvar = []; funbind = fillFunBind fdfs} fdfs [] in
+                               env, def_type, tp_expr env e
+
+
