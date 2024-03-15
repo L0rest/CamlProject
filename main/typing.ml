@@ -2,7 +2,6 @@ open Lang
 
 (* Exceptions *)
 exception TypeError of string
-exception NotFound
 
 (* Environments *)
 type environment =
@@ -11,10 +10,9 @@ type environment =
 
 
 (* Variable typing *)
-let tp_var env valName = let rec searchVal x = function
-                         | ((k,v) :: q) -> if k = x then v else searchVal x q
-                         | [] -> raise NotFound in
-try searchVal valName env.localvar with NotFound -> let FPdecl (t, _, _) = searchVal valName env.funbind in t
+let tp_var env valName =
+try List.assoc valName env.localvar
+with Not_found -> let FPdecl (t, _, _) = List.assoc valName env.funbind in t
 
 
 (* Statement typing *)
