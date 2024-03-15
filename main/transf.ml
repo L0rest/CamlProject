@@ -30,5 +30,6 @@ else CallE (List.map (transf_expr fname paraml) l)
 (* TODO: implement *)
 let transf_fpdefn (FPdecl(tp, fname, params), e) = (FPdecl(tp, fname, params), e)
 
+(* Not sure *)
 let transf_prog (Prog(fdfs, e)) = let new_fdfs = List.map transf_fpdefn fdfs in Prog(new_fdfs, e)
 
