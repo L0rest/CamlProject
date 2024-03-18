@@ -72,6 +72,6 @@ let tp_prog (Prog (fdfs, e)) = let rec getFpdecl env f = match f with
 
                                let env = {localvar = []; funbind = fillFunBind fdfs} in
                                let env = getFpdecl env fdfs in
-                               tp_expr env e (* if the function ends without any error, the programm is well typed *)
+                               tp_expr env e (* if the function ends without raising an exception, the program is well-typed *)
 
 
