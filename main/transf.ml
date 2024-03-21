@@ -13,8 +13,6 @@ let rec is_tailrec_expr fname e = match e with
 | BinOp(_, e1, e2) -> is_tailrec_expr fname e1 && is_tailrec_expr fname e2
 | IfThenElse(cond, e1, e2) -> is_tailrec_expr fname cond && is_tailrec_expr fname e1 && is_tailrec_expr fname e2
 | CallE (f::args) -> List.for_all (is_tailrec_expr fname) args
-| CallE [] -> true
-
 | _ -> true
 
 let rec transf_expr fname paraml e = match e with
