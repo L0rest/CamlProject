@@ -17,10 +17,11 @@ with Not_found -> let FPdecl (t, _, _) = List.assoc valName env.funbind in t
 
 
 (* Statement typing *)
-let rec tp_stmt ft at = match ft,at with
-| (FunT(in_t,out_t), (a :: q)) -> if in_t = a then tp_stmt out_t q else raise (TypeError "Bad argument type")
-| (FunT(in_t,out_t), []) -> ft
-| _ -> if at = [] then ft else raise (TooManyArguments "Too many arguments")
+let rec tp_stmt (ft: tp) (ats: tp list) = match ats with
+    | (at :: atrest) -> match ft with
+                        | FunT(fta, ftb) -> if fta = at then tp_stmt ftb atrest else raise (TypeError "Wrong type for argument")
+                        | _ -> raise (TooManyArguments "Too many arguments")
+    | _ -> ft
 
 
 (* Expression typing *)
@@ -44,34 +45,31 @@ let rec tp_expr env exp = match exp with
                            if t1 = BoolT && t2 = t3 then t2 else raise (TypeError "IfThenElse")
 | CallE(f::args) -> let ft = tp_expr env f in
                     let at = List.map (tp_expr env) args in
-                    if not(List.mem ft [IntT; FloatT; BoolT]) then tp_stmt ft at
-                    else raise (TypeError "CallE on non-function")
+                    tp_stmt ft at
 | _ -> raise (TypeError "Not implemented")
 
 
+(* Function used to fill env.localvar *)
+let fillLocalVar = function
+    | Vardecl(v,t) -> (v, t)
+    | _ -> raise (TypeError "Not a parameter")
+
+
+(* Function used to fill env.funbind *)
+let fillFunBind = function
+    | Fundefn(fpdec, _) -> (name_of_fpdecl fpdec, fpdec)
+    | _ -> raise (TypeError "Procdefn unexpected")
+
+
 (* Function definition typing *)
-let tp_fdefn env (Fundefn (dec, e)) = let FPdecl(_,_,param) = dec in
-                                      let rec getLocalVar = function
-                                      | (Vardecl(v,t) :: q) -> (v, t) :: getLocalVar q
-                                      | _ -> env.localvar in
-                                      let new_env = {localvar = getLocalVar param; funbind = env.funbind} in
-                                      new_env, tp_expr new_env e
+let tp_fdefn env (Fundefn (dec, e)) = let env = {localvar = env.localvar @ List.map fillLocalVar (params_of_fpdecl dec); (* On ajoute les parametres de la fonction a l'environnement local *)
+                                                funbind = env.funbind} in
+                                      if tp_expr env e != (tp_of_fpdecl dec) then raise (TypeError "Function definition")
+                                      else env
 
 
 (* Program typing *)
-let tp_prog (Prog (fdfs, e)) = let rec getFpdecl env f = match f with
-                               | (Fundefn(dec,exp) :: q) -> let env, exp_type = tp_fdefn env (Fundefn(dec,exp)) in getFpdecl env q
-                               | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
-                               | _ -> env in
-
-                               (* Function used to fill env.funbind *)
-                               let rec fillFunBind = function
-                               | (Fundefn(dec,_) :: q) -> (name_of_fpdecl dec, dec) :: fillFunBind q
-                               | ((Procdefn _) :: q) -> raise (TypeError "Procdefn unexpected")
-                               | _ -> [] in
-
-                               let env = {localvar = []; funbind = fillFunBind fdfs} in
-                               let env = getFpdecl env fdfs in
-                               tp_expr env e (* if the function ends without raising an exception, the program is well-typed *)
-
-
+let tp_prog (Prog (fdfs, e)) =
+    let env = {localvar = []; funbind = List.map fillFunBind fdfs} in
+    let env = List.fold_left tp_fdefn env fdfs in
+    tp_expr env e
