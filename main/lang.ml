@@ -59,6 +59,7 @@ let tp_of_vardecl (Vardecl (_, t)) = t
 (* function declaration: return type; parameter declarations *)
 type fpdecl = FPdecl of tp * vname * (vardecl list)
 
+let tp_of_fpdecl (FPdecl (t, _, _)) = t
 let name_of_fpdecl (FPdecl (t, fn, pds)) = fn
 let params_of_fpdecl (FPdecl (t, fn, pds)) = pds
 
