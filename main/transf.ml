@@ -28,14 +28,6 @@ let rec transf_expr fname paraml e = match e with
         Cond (cond, transf_expr fname paraml e1, transf_expr fname paraml e2)
     | _ -> Return e
 
-let transf_fpdefn (FPdecl(tp, fname, params), e) =
-    let param_names = List.map (fun (Vardecl(vname, _)) -> vname) params in
-    let new_e = transf_expr fname param_names e in
-    (FPdecl(tp, fname, params), new_e)
+let transf_fpdefn (Fundefn(dec,e)) = Fundefn(dec, transf_expr (name_of_fpdecl dec) (List.map name_of_vardecl (params_of_fpdecl dec)) e)
 
-let transf_fpdefn fpdefn =
-    match fpdefn with
-    | (FPdecl(tp, fname, params), e) ->
-        let param_names = List.map (fun (Vardecl(vname, _)) -> vname) params in
-        let new_e = transf_expr fname param_names e in
-        (FPdecl(tp, fname, params), new_e)
+let transf_prog (Prog(fundefns, e)) = Prog(List.map transf_fpdefn fundefns, transf_expr )
