@@ -11,7 +11,6 @@ let doc_of_const = function
 | BoolV false -> string "False"
 | IntV i -> PPrint.OCaml.int i
 | FloatV f -> PPrint.OCaml.float f
-| _ -> empty
 
 
 (* Variables printing *)
