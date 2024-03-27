@@ -29,7 +29,7 @@ print((factr(10,1) == fac(10)))
 
 ### typing.ml :  
 
-Typage de variable, d'expression, de definition de fonction, de variable et d'application:
+Typage de variable, d'expression, de definition de fonction, de variable et d'application :
 
 - tp_var : prend un environnement et un nom de variable et renvoie le type de cette variable dans l'environnement donné
 - tp_application : prend un type de fonction et une liste de types d'arguments, et renvoie le type de l'application de cette fonction à ces arguments  
@@ -42,8 +42,7 @@ Typage de variable, d'expression, de definition de fonction, de variable et d'ap
 
 ### transf.ml : 
 
-Tranformation de code caml en code python
-:
+Tranformation de code caml en code python :
 
 - names_expr : prend une expression et renvoie un ensemble de noms de variables utilisés dans cette expression  
 - is_tailrec_expr : fonction booléenne qui vérifie si une expression est récursive terminale
