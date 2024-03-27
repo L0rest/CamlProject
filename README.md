@@ -56,13 +56,13 @@ Tranformation de code caml en code python :
 
 Evaluation des expressions :
 
-lookup : recherche une variable. Si elle est trouvée, elle renvoie sa valeur, ou une erreur dans le cas contraire.
-update : met à jour la valeur d'une variable. Si elle existe déjà sa valeur est mise à jour sinon une nouvelle entrée est créée.
-arithOperation:  effectue une opération arithmétique binaire sur deux valeurs. 
-compOperation :  effectue une opération de comparaison sur deux valeurs.   
-logicOperation : value : effectue une opération logique sur deux valeurs.   
-eval_expr : évalue une expression.  
-eval_prog  : évalue un programme.
+- lookup : recherche une variable. Si elle est trouvée, elle renvoie sa valeur, ou une erreur dans le cas contraire.
+- update : met à jour la valeur d'une variable. Si elle existe déjà sa valeur est mise à jour sinon une nouvelle entrée est créée.
+- arithOperation:  effectue une opération arithmétique binaire sur deux valeurs. 
+- compOperation :  effectue une opération de comparaison sur deux valeurs.   
+- logicOperation : value : effectue une opération logique sur deux valeurs.   
+- eval_expr : évalue une expression.  
+- eval_prog  : évalue un programme.
 
 ### lang.ml:
 
