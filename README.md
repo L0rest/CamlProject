@@ -42,7 +42,9 @@ Typage de variable, d'expression, de definition de fonction, de variable et d'ap
 
 ### transf.ml : 
 
-Tranformation de code caml en code python:
+Tranformation de code caml en code python
+:
+
 - names_expr : prend une expression et renvoie un ensemble de noms de variables utilisés dans cette expression  
 - is_tailrec_expr : fonction booléenne qui vérifie si une expression est récursive terminale
 - transf_expr : transforme une expression pour la rendre récursive terminale si elle ne l'est pas déjà
@@ -53,11 +55,15 @@ Tranformation de code caml en code python:
 
 ### eval.ml: 
 
-Censé evalué le code, il definit les type:
-- result : soit une valeur soit une fermeture de fonction 
-- state : liste de paires de noms de variables et de résultats
-eval_prog : censée évaluer un programme mais non implémentée (renvoie seulement Val (IntV 42) actuellement) 
+Evaluation des expressions :
 
+lookup : recherche une variable. Si elle est trouvée, elle renvoie sa valeur, ou une erreur dans le cas contraire.
+update : met à jour la valeur d'une variable. Si elle existe déjà sa valeur est mise à jour sinon une nouvelle entrée est créée.
+arithOperation:  effectue une opération arithmétique binaire sur deux valeurs. 
+compOperation :  effectue une opération de comparaison sur deux valeurs.   
+logicOperation : value : effectue une opération logique sur deux valeurs.   
+eval_expr : évalue une expression.  
+eval_prog  : évalue un programme.
 
 ### lang.ml:
 
