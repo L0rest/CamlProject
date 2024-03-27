@@ -69,4 +69,4 @@ let rec eval_expr (e: expr) (s: state) : result = match e with
 (* **** Result of evaluation **** *)
 
 (* TODO: implement *)
-let eval_prog (Prog (fdfs, e)) = let example_expr = IfThenElse (BinOp (BCompar BCeq, Const (IntV 5), Const (IntV 5)), Const (IntV 1), Const (IntV 0)) []
+let eval_prog (Prog (fdfs, e)) = eval_expr (IfThenElse(BinOp (BCompar BCeq, Const (IntV 5), Const (IntV 5)), Const (IntV 1), Const (IntV 0))) []
