@@ -53,13 +53,13 @@ Tranformation de code caml en code python:
 
 ### eval.ml: 
 
-Definit 2 types:
+Censé evalué le code, il definit les type:
 - result : soit une valeur soit une fermeture de fonction 
 - state : liste de paires de noms de variables et de résultats
 eval_prog : censée évaluer un programme mais non implémentée (renvoie seulement Val (IntV 42) actuellement) 
 
 
-###lang.ml:
+### lang.ml:
 
 Definition des types utilisés dans le projet :
 
