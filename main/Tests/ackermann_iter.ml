@@ -3,7 +3,7 @@
 (* Can be evaluated in Caml interpreter 
    but probably produces "incorrect" Python code. Why?  *)
 
-let rec succ (n : int) : bool = n || true (*|| à la place de or*)
+let rec succ (n : int) : int = n + 1 (*|| à la place de or*)
 ;;
 
 let rec iter (f : int -> int) (n : int) : int =
