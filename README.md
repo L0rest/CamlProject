@@ -27,7 +27,7 @@ print((factr(10,1) == fac(10)))
 
 ## *2) Fonctionnalités implémentées*
 
-typing.ml :  
+### typing.ml :  
 
 Typage de variable, d'expression, de definition de fonction, de variable et d'application:
 
@@ -40,7 +40,7 @@ Typage de variable, d'expression, de definition de fonction, de variable et d'ap
 - tp_prog :  prend un programme et vérifie que chaque fonction est bien typée et que l'expression est bien typée dans l'environnement qui inclut toutes les fonctions
 
 
-transf.ml : 
+### transf.ml : 
 
 Tranformation de code caml en code python:
 - names_expr : prend une expression et renvoie un ensemble de noms de variables utilisés dans cette expression  
@@ -51,7 +51,7 @@ Tranformation de code caml en code python:
 - transf_prog : transforme un programme pour rendre toutes ses fonctions récursives terminales si elles ne le sont pas déjà et renvoie un nouveau programme
 
 
-eval.ml: 
+### eval.ml: 
 
 Definit 2 types:
 - result : soit une valeur soit une fermeture de fonction 
@@ -59,11 +59,11 @@ Definit 2 types:
 eval_prog : censée évaluer un programme mais non implémentée (renvoie seulement Val (IntV 42) actuellement) 
 
 
-lang.ml:
+###lang.ml:
 
 Definition des types utilisés dans le projet :
 
-- vname : représente les noms de variables. 
+- vname : représente les noms de variables
 - barith, bcompar, blogic, binop :représentent différents types d'opérateurs binaires
 - value : les valeurs que peuvent prendre les expressions (bool, int, float)
 - expr :  représente les expressions. Il peut s'agir d'une constante, d'une variable, d'une opération binaire, d'une expression conditionnelle ou d'un appel de fonction (qui ne fonctionne pas)
